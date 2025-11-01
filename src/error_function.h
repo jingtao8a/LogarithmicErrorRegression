@@ -8,7 +8,7 @@
     All supported types of errors supported
 */
 enum ERROR_TYPE{L1Norm, LogNorm, DiscreteLogNorm, L2Norm, FastDiscreteLogNorm, FPLogNorm, SquaredLogNorm, HardwareNorm, ExpNorm};
-
+//L1范数误差（最小绝对偏差）、对数误差、离散对数误差、L2范数误差（最小平方差）、快速离散对数误差、浮点对数误差、平方对数误差、硬件范数误差、指数范数误差
 int alignment = 0;
 #define CACHE_LINE_SIZE 8
 #define LOG2(X) ((unsigned) (8*sizeof (unsigned long long) - __builtin_clzll((X)) - 1))

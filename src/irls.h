@@ -43,6 +43,7 @@ linear_regression weighted_simple_regression(std::vector<double>& data, std::vec
 
 
 /*
+    迭代加权最小二乘法
     A simple Implementation of the Iteratively rewieghted least squares algorithm for L1 regression
     https://en.wikipedia.org/wiki/Iteratively_reweighted_least_squares
 */
