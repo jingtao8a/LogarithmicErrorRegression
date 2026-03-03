@@ -14,10 +14,21 @@
 #include <climits>
 #include <random>
 #include <string>
+#include <exception>
 
+class InvalidNumDataException : public std::exception {
+private:
+    std::string msg;
+public:
+    InvalidNumDataException(const std::string& message) : msg(message) {}
+
+    const char* what() const noexcept override {
+        return msg.c_str();
+    }
+};
 
 template<typename T>
-static std::vector<T> load_data(char * filename_cs) {
+static std::vector<T> load_data(char * filename_cs, long num_data) {
     std::string filename(filename_cs);
     std::vector<T> data;
 
@@ -28,10 +39,13 @@ static std::vector<T> load_data(char * filename_cs) {
     }
     // Read size.
     uint64_t size;
-    in.read(reinterpret_cast<char*>(&size), sizeof(uint64_t));
-    data.resize(size);
+    in.read(reinterpret_cast<char*>(&size), sizeof(int));
+    if (num_data > size) {
+        throw InvalidNumDataException("bad num");
+    }
+    data.resize(num_data);
     // Read values.
-    in.read(reinterpret_cast<char*>(data.data()), size*sizeof(T));
+    in.read(reinterpret_cast<char*>(data.data()), num_data*sizeof(T));
     in.close();
     
     return data;
@@ -125,17 +139,20 @@ std::vector<double> parse_arguments(int argc, char *argv[]){
         }
     }
     else{
-        if (cache_data.size() == 0){
-            std::cout << argv[1] << "\n";
-            cache_data = load_data<u_int64_t>(argv[1]);
-        }
-
-        data.reserve(num_data);
-        std::uniform_int_distribution<long> dis(0, std::max<long>((long)cache_data.size()-1-num_data, 0));
-        int start = dis(gen);
-        for(long i = 0; cache_data[i] < LONG_MAX && i < num_data && i < cache_data.size(); i++){
-            data.push_back((double)cache_data[start+i]);
-        }
+//        if (cache_data.size() == 0){
+//            std::cout << argv[1] << "\n";
+//            cache_data = load_data<u_int64_t>(argv[1]);
+//        }
+//
+//        data.reserve(num_data);
+//        std::uniform_int_distribution<long> dis(0, std::max<long>((long)cache_data.size()-1-num_data, 0));
+//        int start = dis(gen);
+//        for(long i = 0; cache_data[i] < LONG_MAX && i < num_data && i < cache_data.size(); i++){
+//            data.push_back((double)cache_data[start+i]);
+//        }
+        std::cout << argv[1] << std::endl;
+        data = load_data<double>(argv[1], num_data);
+        // /home/chengang/chengang/jingtao8a/reconstruct_NFL/data/fb_200M_double.bin
     }
     std::sort(data.begin(), data.end());
     //data.erase( unique( data.begin(), data.end() ), data.end() );
