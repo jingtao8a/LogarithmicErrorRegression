@@ -41,6 +41,7 @@ static std::vector<T> load_data(char * filename_cs, long num_data) {
     uint64_t size;
     in.read(reinterpret_cast<char*>(&size), sizeof(int));
     if (num_data > size) {
+        std::cout << "size: "  << size << std::endl;
         throw InvalidNumDataException("bad num");
     }
     data.resize(num_data);
